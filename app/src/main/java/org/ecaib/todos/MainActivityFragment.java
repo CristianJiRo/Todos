@@ -66,6 +66,7 @@ public class MainActivityFragment extends Fragment {
                 null,
                 null
         );
+
         adapter.swapCursor(cursor);
     }
 }

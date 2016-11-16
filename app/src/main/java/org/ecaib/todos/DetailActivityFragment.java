@@ -1,5 +1,6 @@
 package org.ecaib.todos;
 
+import android.content.AsyncQueryHandler;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -23,6 +24,7 @@ public class DetailActivityFragment extends Fragment {
     private TextView etTitle;
     private TextView etDescription;
     private long itemId = -1;
+    private AsyncQueryHandler handler;
 
     public DetailActivityFragment() {
     }
@@ -38,6 +40,8 @@ public class DetailActivityFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_detail, container, false);
+
+        handler = new AsyncQueryHandler(getContext().getContentResolver()) {};
 
         etTitle = (TextView) view.findViewById(R.id.etTitle);
         etDescription = (TextView) view.findViewById(R.id.etDescription);
@@ -114,21 +118,22 @@ public class DetailActivityFragment extends Fragment {
     }
 
     private void updateItem(NotesContentValues values) {
-        getContext().getContentResolver().update(
+        handler.startUpdate(0, null,
                 NotesColumns.CONTENT_URI,
                 values.values(),
                 NotesColumns._ID + " = ?",
                 new String[]{String.valueOf(itemId)});
+
     }
 
     private void insertItem(NotesContentValues values) {
-        getContext().getContentResolver().insert(
+        handler.startInsert(0, null,
                 NotesColumns.CONTENT_URI,
                 values.values());
     }
 
     private void deleteItem() {
-        getContext().getContentResolver().delete(
+        handler.startDelete(0, null,
                 NotesColumns.CONTENT_URI,
                 NotesColumns._ID + " = ?",
                 new String[]{String.valueOf(itemId)}
